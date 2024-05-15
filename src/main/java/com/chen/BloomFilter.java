@@ -1,9 +1,12 @@
 package com.chen;
 
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.List;
 
-public class BloomFilter {
+public class BloomFilter implements Serializable {
+    // 实现 Serializable 接口
+    private static final long serialVersionUID = 1L;
     private int m; // 布隆过滤器的位数
     private int h; // 哈希函数个数
     private BitSet bitSet; // 位数组
@@ -51,7 +54,7 @@ public class BloomFilter {
         }
     }
 
-    public boolean test(int[] a) {
+    public boolean test(int[] a) {//查询元素，按列（即按布隆过滤器）查询时使用
         for (int idx : a) {
             if (!bitSet.get(idx)) {
                 return false;

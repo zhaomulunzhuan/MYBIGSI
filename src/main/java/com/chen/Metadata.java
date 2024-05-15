@@ -11,15 +11,12 @@ public class Metadata implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final String DELETION_SPECIAL_SAMPLE_NAME = "DELETION_SPECIAL_SAMPLE_NAME";
     private static int colour_count;//数据集数量
-
-    static Map<String, Integer> sampleToColour;
-    private static List<String> colourToSample;
-
-    private static int nums_rows;
-    private static int num_cols;
-
-    private static int bloomfilterSize;
-    private static int numHashs;
+    static Map<String, Integer> sampleToColour;//数据集名称到数据集索引
+    private static List<String> colourToSample;//数据集索引到数据集名称
+    private static int nums_rows;//行数
+    private static int num_cols;//列数
+    private static int bloomfilterSize;//布隆过滤器大小
+    private static int numHashs;//哈希函数数量
 
     static {
         colour_count=0;
@@ -71,7 +68,7 @@ public class Metadata implements Serializable {
         return colourToSample;
     }
 
-    public static void add_sample(String sample_name){
+    public static void add_sample(String sample_name){//添加数据集
         validateSampleName(sample_name);//检查样本名称
         int cur_index=colour_count;
         sampleToColour.put(sample_name,cur_index);
@@ -101,7 +98,7 @@ public class Metadata implements Serializable {
         }
     }
 
-    public Map<String, Integer> samplesToColours(List<String> sampleNames) {//获得一个数据集列表的对应的数据集-索引表，即键是数据集名称，值是对应索引
+    public Map<String, Integer> samplesToColours(List<String> sampleNames) {//获得一个数据集列表的对应的数据集索引表，即键是数据集名称，值是对应索引
         Map<String, Integer> result = new HashMap<>();
         for (String sampleName : sampleNames) {
             Integer colour = getIndexBySample(sampleName);
@@ -123,7 +120,7 @@ public class Metadata implements Serializable {
         return result;
     }
 
-    public static void validateSampleName(String sampleName) throws IllegalArgumentException {
+    public static void validateSampleName(String sampleName) throws IllegalArgumentException {//查看数据集名称是否有效
         if (sampleName.equals(DELETION_SPECIAL_SAMPLE_NAME)) {
             throw new IllegalArgumentException("You can't call a sample " + DELETION_SPECIAL_SAMPLE_NAME);
         }
@@ -134,7 +131,7 @@ public class Metadata implements Serializable {
     }
 
     // 序列化成员函数
-    public static void serialize(String filePath) {
+    public static void serialize(String filePath) {//元数据序列化
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
             oos.writeInt(colour_count);
             oos.writeObject(sampleToColour);
@@ -150,7 +147,7 @@ public class Metadata implements Serializable {
     }
 
     // 反序列化成员函数
-    public static Metadata deserialize(String filePath) {
+    public static Metadata deserialize(String filePath) {//反序列化，即从文件中加载Metadata类的各成员信息
         Metadata metadata = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
             colour_count = ois.readInt();

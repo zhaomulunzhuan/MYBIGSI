@@ -5,19 +5,21 @@ import java.util.List;
 
 public class main {
     public static void main(String[] args) throws IOException {
+        //每一行是一个kmer数据集的地址
         String filePath = "D:\\Code\\Idea_Codes\\BIGSI_FILE\\BIGSI_inputfiles.txt";
 
         List<String> inputFiles = Utils.readInputFiles(filePath);
-//
-//        int bloomfilterSize=76938883;
-//        int numHashs=3;
 
-        int bloomfilterSize=59645240;
-        int numHashs=7;
+        //根据最大基数确定布隆过滤器大小
+        int b=6456730;//最大基数
+        float FPR= 0.01F;//误报率
+        int k=7;
+        int bloomfilterSize= (int) (-1 * (k * b) / Math.log(1 - Math.pow(FPR, 1.0 / k)));
+
         //构建
 //        long startBuild=System.currentTimeMillis();
 //
-//        Index.BuildIndex(bloomfilterSize,numHashs,inputFiles);
+//        Index.BuildIndex(bloomfilterSize,k,inputFiles);
 //
 //        long endBuild=System.currentTimeMillis();
 //        long BuildTime=(endBuild-startBuild)/ 1000;
@@ -33,16 +35,23 @@ public class main {
         long BuildTime=(endBuild-startBuild)/ 1000;
         System.out.println("反序列化构建时间"+BuildTime+"秒");
 
-        //查询
+        //按行查询
         long startquery=System.currentTimeMillis();
 
-//        List<String> result_sampels=index.querykmer("AAAGAGACCGGCGATTCTAGTGAAATCGAAC");
-//        index.querykmerbycols("AAAGAGACCGGCGATTCTAGTGAAATCGAAC");
         Index.queryFile("D:\\Code\\Idea_Codes\\BIGSI_FILE\\query.txt");
 
         long endquery=System.currentTimeMillis();
         long queryTime=endquery-startquery;
         System.out.println("查询时间"+queryTime+"毫秒");
+
+        //按列查询
+        long startqueryAScol=System.currentTimeMillis();
+
+        Index.queryFileAScol("D:\\Code\\Idea_Codes\\BIGSI_FILE\\query.txt");
+
+        long endqueryAScol=System.currentTimeMillis();
+        long queryTimeAScol=endqueryAScol-startqueryAScol;
+        System.out.println("按列查询时间"+queryTimeAScol+"毫秒");
 
 //        //插入
 //        long startinsert=System.currentTimeMillis();
@@ -52,13 +61,7 @@ public class main {
 //        long endinsert=System.currentTimeMillis();
 //        long insertTime=endinsert-startinsert;
 //        System.out.println("插入时间"+insertTime+"毫秒");
-//
-//
-//        long startquery2=System.currentTimeMillis();
-//        List<String> result_sampels2=index.querykmer("TTATTACACCTCCCTGAGGATACTCTTCTAA");
-//        long endquery2=System.currentTimeMillis();
-//        long queryTime2=endquery2-startquery2;
-//        System.out.println("查询时间"+queryTime2+"毫秒");
+
 
 
 

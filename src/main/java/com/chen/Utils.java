@@ -62,6 +62,8 @@ public class Utils {
         //索引序列化，即将块信息和布隆过滤器信息序列化
         String indexFile="D:/Code/Idea_Codes/BIGSI_FILE/serializeFIle"+"/"+"index.ser";
         Index.serialize(indexFile);
+//        String indexFile="D:/Code/Idea_Codes/BIGSI_FILE/serializeFIle"+"/";
+//        Index.serialize(indexFile);
     }
 
 }
